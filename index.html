@@ -2,10 +2,162 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>N○M休 スコアボード（比率版）</title>
+  <title>N○M休</title>
   <style>
     html, body {
-      height: 100%;
+  height: 100vh;
+  margin: 0;
+  font-family: "Yu Gothic", sans-serif;
+  background: #f6f6f6;
+  text-align: center;
+  overflow: hidden; /* ← スクロールを防止 */
+}
+
+#title {
+  font-size: 1.8vw;
+  margin-top: 0.5vw;
+}
+
+#controls {
+  margin: 0.5vw 0;
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.8vw;
+  justify-items: center;
+  align-items: center;
+  width: 95%;
+  height: 75vh; /* ← ここで高さを制御 */
+  margin: 0 auto;
+}
+
+.player {
+  width: 13vw;
+  height: 35vh; /* ← 縦方向をvh基準に変更 */
+  background: white;
+  border-radius: 0.8vw;
+  box-shadow: 0 0 0.4vw rgba(0, 0, 0, 0.3);
+  padding: 1vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  transition: 0.3s;
+}
+
+.inactive {
+  background: #ddd;
+  color: #888;
+}
+
+.winner {
+  background: red;
+  color: #000;
+  font-weight: bold;
+}
+
+.winner-text {
+  font-size: 1.8vw;
+  color: white;
+}
+
+.score {
+  font-size: 3vw;
+  font-weight: bold;
+}
+
+.status {
+  font-size: 0.9vw;
+}
+
+.休 {
+  color: black;
+  font-size: 1.5vw;
+}
+
+.btns {
+  display: flex;
+  gap: 0.6vw;
+  justify-content: center;
+  width: 90%;
+}
+
+.btns button {
+  flex: 1;
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 0.8vw;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5vw;
+  transition: 0.2s;
+}
+
+.btns .reset {
+  flex: none;
+  aspect-ratio: 2;
+  width: 85%;
+  font-size: 1vw;
+  background: gray;
+  color: white;
+  border-radius: 0.6vw;
+}
+
+.btns button:hover {
+  opacity: 0.8;
+}
+
+.plus {
+  background: red;
+  color: white;
+}
+
+.miss {
+  background: blue;
+  color: white;
+}
+
+#nextBtn {
+  background: #4CAF50;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.8vw;
+  padding: 0.4vw 1.5vw;
+  cursor: pointer;
+  font-size: 1.3vw;
+  transition: 0.3s;
+}
+
+#nextBtn:hover {
+  background: #45a049;
+}
+
+#controls input[type="number"] {
+  width: 3.5vw;
+  padding: 0.2vw 0.4vw;
+  border: 0.1vw solid #ccc;
+  border-radius: 0.5vw;
+  text-align: center;
+  font-size: 1vw;
+  margin-right: 0.8vw;
+}
+
+#controls label {
+  font-weight: bold;
+  margin-right: 0.3vw;
+  font-size: 1vw;
+}
+
+  </style>
+  <!-- <style>
+    html, body {
+      height: 100vh;
       margin: 0;
       font-family: "Yu Gothic", sans-serif;
       background: #f6f6f6;
@@ -163,7 +315,7 @@
       margin-right: 0.4vw;
       font-size: 1.2vw;
     }
-  </style>
+  </style> -->
 </head>
 
 <body>
