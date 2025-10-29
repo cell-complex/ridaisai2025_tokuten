@@ -1,7 +1,8 @@
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>N〇M休</title>
+  <title>N○M休 スコアボード（比率版）</title>
   <style>
     html, body {
       height: 100%;
@@ -171,7 +172,7 @@
 
   <div id="controls">
     <label>N○：</label><input type="number" id="winCount" value="3" min="1">
-    <label>M休：</label><input type="number" id="restCount" value="2" min="1">
+    <label>M休：</label><input type="number" id="restCount" value="1" min="1">
     <button id="nextBtn">スルー</button>
   </div>
 
@@ -208,7 +209,7 @@
         const score = document.createElement("div");
         score.className = "score";
         if (p.winner) {
-          score.innerHTML = `<span class="winner-text">勝ち抜け！</span>`;
+          score.innerHTML = `<span class="winner-text">抜け！</span>`;
         } else {
           score.textContent = p.score;
         }
