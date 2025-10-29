@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>N○M休 スコアボード（比率版）</title>
+  <title>N○M休</title>
   <style>
     html, body {
       height: 100%;
