@@ -1,46 +1,48 @@
-
+<!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8">
-  <title>N○M休 スコアボード</title>
+  <title>N○M休 スコアボード（比率版）</title>
   <style>
-    body {
+    html, body {
+      height: 100%;
+      margin: 0;
       font-family: "Yu Gothic", sans-serif;
       background: #f6f6f6;
       text-align: center;
     }
 
     #title {
-      font-size: 20px;
+      font-size: 2.2vw; /* ビューポート幅基準 */
     }
 
     h1 {
-      margin: 2px;
+      margin: 0.3vw;
     }
 
     #controls {
-      margin: 10px;
+      margin: 1vw 0;
     }
 
     #board {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: 10px;
+      gap: 1vw;
       justify-items: center;
-      margin: 20px;
+      margin: 2vw auto;
+      width: 90%;
       font-weight: bold;
-      font-size: 20px;
+      font-size: 1.8vw;
     }
 
     .player {
-      width: 130px;
-      height: 210px;
+      width: 13vw;
+      height: 21vw;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-      padding: 10px;
+      border-radius: 1vw;
+      box-shadow: 0 0 0.5vw rgba(0, 0, 0, 0.2);
+      padding: 1vw;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -60,55 +62,55 @@
     }
 
     .winner-text {
-      font-size: 24px;
+      font-size: 2vw;
       font-weight: bold;
       color: white;
     }
 
     .score {
-      font-size: 50px;
+      font-size: 5vw;
       font-weight: bold;
       padding: 0;
     }
 
     .status {
-      font-size: 10px;
+      font-size: 1vw;
     }
 
     .休 {
       color: black;
-      font-size: 30px;
+      font-size: 2.5vw;
     }
 
-  .btns {
-    display: flex;
-    gap: 10px;         /* ボタン間の隙間 */
-    justify-content: center;
-    width: 80%;        /* 親コンテナの幅に対してボタン群を制御 */
-    margin: 0 auto;    /* 中央寄せ */
-  }
+    .btns {
+      display: flex;
+      gap: 1vw;
+      justify-content: center;
+      width: 80%;
+      margin: 0 auto;
+    }
 
-  .btns button {
-    flex: 1;            /* 残りの幅を均等に分配 */
-    aspect-ratio: 1;    /* 正方形を維持 */
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+    .btns button {
+      flex: 1;
+      aspect-ratio: 1;
+      border: none;
+      border-radius: 1vw;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2vw;
+      transition: 0.2s;
+    }
 
     .btns .reset {
       flex: none;
       aspect-ratio: 2;
       width: 90%;
-      font-size: 70%;
-      /* 文字サイズは従来通り */
-      padding: 0 10px;
+      font-size: 1.2vw;
       background: gray;
       color: white;
-      border-radius: 8px;
+      border-radius: 1vw;
     }
 
     .btns button:hover {
@@ -116,19 +118,16 @@
     }
 
     .plus {
-      font-size: 30px;
       background: red;
       color: white;
     }
 
     .miss {
-      font-size: 30px;
       background: blue;
       color: white;
     }
 
     .reset {
-      /* font-size: 20px; */
       background: gray;
       color: white;
     }
@@ -138,9 +137,10 @@
       color: white;
       font-weight: bold;
       border: none;
-      border-radius: 8px;
-      padding: 10px 30px;
+      border-radius: 1vw;
+      padding: 0.6vw 2vw;
       cursor: pointer;
+      font-size: 1.5vw;
       transition: 0.3s;
     }
 
@@ -149,18 +149,19 @@
     }
 
     #controls input[type="number"] {
-      width: 60px;
-      padding: 4px 6px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      width: 4vw;
+      padding: 0.3vw 0.5vw;
+      border: 0.1vw solid #ccc;
+      border-radius: 0.6vw;
       text-align: center;
-      font-size: 16px;
-      margin-right: 10px;
+      font-size: 1.2vw;
+      margin-right: 1vw;
     }
 
     #controls label {
       font-weight: bold;
-      margin-right: 4px;
+      margin-right: 0.4vw;
+      font-size: 1.2vw;
     }
   </style>
 </head>
@@ -170,8 +171,8 @@
   <h1 id="title">N○M休</h1>
 
   <div id="controls">
-    <label>N○：</label><input type="number" id="winCount" value="3" min="1" style="width:50px;">
-    <label>M休：</label><input type="number" id="restCount" value="2" min="1" style="width:50px;">
+    <label>N○：</label><input type="number" id="winCount" value="3" min="1">
+    <label>M休：</label><input type="number" id="restCount" value="2" min="1">
     <button id="nextBtn">スルー</button>
   </div>
 
@@ -229,14 +230,12 @@
           plusBtn.textContent = "○";
           plusBtn.className = "plus";
           plusBtn.disabled = !p.active;
-          // 正解ボタン
           plusBtn.onclick = () => {
             p.score++;
             if (p.score >= winNeeded) {
               p.winner = true;
               p.active = false;
             }
-            // 他プレイヤーの休みを1減らす
             players.forEach(other => {
               if (other.id !== p.id && other.rest > 0) {
                 other.rest--;
@@ -250,11 +249,9 @@
           missBtn.textContent = "×";
           missBtn.className = "miss";
           missBtn.disabled = !p.active;
-          // 誤答ボタン
           missBtn.onclick = () => {
             p.rest = restTurns;
             p.active = false;
-            // 他プレイヤーの休みを1減らす
             players.forEach(other => {
               if (other.id !== p.id && other.rest > 0) {
                 other.rest--;
@@ -295,5 +292,4 @@
   </script>
 
 </body>
-
 </html>
