@@ -15,14 +15,13 @@
       overflow: hidden;
       /* ← スクロールを防止 */
     }
-
     #title {
       font-size: 2.5vw;
       margin-top: 0.2vw;
     }
 
     #controls {
-      margin: 0.5vw 0;
+      margin: 1vw 1vw;
     }
 
     #board {
@@ -41,7 +40,6 @@
     .player {
       width: 13vw;
       height: 35vh;
-      /* ← 縦方向をvh基準に変更 */
       background: white;
       border-radius: 0.8vw;
       box-shadow: 0 0 0.4vw rgba(0, 0, 0, 0.3);
@@ -52,6 +50,7 @@
       justify-content: space-between;
       transition: 0.3s;
       font-weight: bold;
+      font-size: 4vh;
     }
 
     .inactive {
@@ -66,12 +65,12 @@
     }
 
     .winner-text {
-      font-size: 2.5vw;
+      font-size: 3vw;
       color: white;
     }
 
     .score {
-      font-size: 4vw;
+      font-size: 5vw;
       font-weight: bold;
     }
 
@@ -136,10 +135,11 @@
       font-weight: bold;
       border: none;
       border-radius: 0.8vw;
-      padding: 0.7vw 2.8vw;
+      padding: 1vw 3vw;
       cursor: pointer;
-      font-size: 1.5vw;
+      font-size: 2vw;
       transition: 0.3s;
+      margin: 0 5vw;
     }
 
     #nextBtn:hover {
@@ -148,18 +148,19 @@
 
     #controls input[type="number"] {
       width: 3.5vw;
-      padding: 0.2vw 0.4vw;
+      padding: 1vw 1vw;
       border: 0.1vw solid #ccc;
       border-radius: 0.5vw;
       text-align: center;
-      font-size: 1vw;
-      margin-right: 0.8vw;
+      font-size: 3vw;
+      font-weight: bold;
+      margin: 1.5vw 0;
     }
 
     #controls label {
       font-weight: bold;
-      margin-right: 0.3vw;
-      font-size: 1vw;
+      /* margin-right: 1vw; */
+      font-size: 3vw;
     }
   </style>
 
@@ -167,12 +168,15 @@
 
 <body>
 
-  <h1 id="title">N○M休</h1>
+  <!-- <h1 id="title">N○M休</h1> -->
 
   <div id="controls">
-    <label>N○：</label><input type="number" id="winCount" value="3" min="1">
-    <label>M休：</label><input type="number" id="restCount" value="1" min="1">
+    <input type="number" id="winCount" value="3" min="1">
+    <label>回正解で抜け！ 誤答で</label>
+    <input type="number" id="restCount" value="1" min="1">
+    <label>回休み</label>
     <button id="nextBtn">スルー</button>
+
   </div>
 
   <div id="board"></div>
