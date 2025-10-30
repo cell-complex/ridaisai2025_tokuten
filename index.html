@@ -101,18 +101,20 @@
             font-weight: bold;
         }
 
-        /* 休み表示（小さめ） */
+        /* ステータス（休み／Lock）表示の領域 */
         .status {
             font-size: 2vw;
             font-weight: bold;
+            height: 2.5vw;
         }
 
-        .rest {
-            font-size: 2.5vw;
+        /* Lockの表示調整 */
+        .lock {
+            font-size: 3vw;
             color: black;
-            margin-top: 4px;
             position: relative;
-            top: -6px;
+            top: -2vw;
+            display: inline-block;
         }
 
         /* ○×ボタン群：横並びにするために flex を使用 */
@@ -237,7 +239,7 @@
     <div id="controls">
         <input type="number" id="winCount" value="3" min="1" />
         <label>回正解で抜け！ 誤答で</label>
-        <input type="number" id="restCount" value="1" min="1" />
+        <input type="number" id="lockCount" value="1" min="1" />
         <label>回休み</label>
         <button id="nextBtn" class="controlBtn GreenBtn">スルー</button>
         <button id="backBtn" class="controlBtn GreenBtn">1つ戻る</button>
@@ -257,21 +259,21 @@
         const N = 12; // プレイヤー数（必要に応じて変更可能）
         // 初期設定値（input の初期値を読むが、render 時に最新値を読み直す）
         let winNeeded = parseInt(document.getElementById("winCount").value);
-        let restTurns = parseInt(document.getElementById("restCount").value);
+        let lockTurns = parseInt(document.getElementById("lockCount").value);
 
         /* -------------------------
            プレイヤー状態の保持
            players はオブジェクト配列：
-           { id, score, rest, active, winner }
+           { id, score, lock, active, winner }
            - score: 現在の正解回数
-           - rest: 休み残りターン数（0なら休み無し）
+           - lock: 休み残りターン数（0なら休み無し）
            - active: 現在操作可能か（休み中や抜けていると false）
            - winner: 抜け（勝ち）したかどうか
            ------------------------- */
         let players = Array.from({ length: N }, (_, i) => ({
             id: i + 1,
             score: 0,
-            rest: 0,
+            lock: 0,
             active: true,
             winner: false
         }));
@@ -301,9 +303,9 @@
             // board を空にしてから再描画
             board.innerHTML = "";
 
-            // ユーザーが #winCount / #restCount を変えていたら最新値を取得
+            // ユーザーが #winCount / #lockCount を変えていたら最新値を取得
             winNeeded = parseInt(document.getElementById("winCount").value);
-            restTurns = parseInt(document.getElementById("restCount").value);
+            lockTurns = parseInt(document.getElementById("lockCount").value);
 
             // 各プレイヤー要素を作成して board に append
             players.forEach(p => {
@@ -331,8 +333,8 @@
                 // ステータス（休み残り）
                 const status = document.createElement("div");
                 status.className = "status";
-                if (p.rest > 0 && !p.winner) {
-                    status.innerHTML = `<span class="rest">${p.rest}休</span>`;
+                if (p.lock > 0 && !p.winner) {
+                    status.innerHTML = `<span class="lock">Lock${p.lock}</span>`;
                 } else {
                     status.innerHTML = "";
                 }
@@ -360,16 +362,16 @@
                         }
                         // 他のプレイヤーで休みがある者は1ターン減らす
                         players.forEach(other => {
-                            if (other.id !== p.id && other.rest > 0) {
-                                other.rest--;
-                                if (other.rest === 0 && !other.winner) other.active = true;
+                            if (other.id !== p.id && other.lock > 0) {
+                                other.lock--;
+                                if (other.lock === 0 && !other.winner) other.active = true;
                             }
                         });
                         render(); // 状態更新後に再描画
                     };
 
                     /* ===== ×ボタン =====
-                       - 誤答で休みに入れる（rest = restTurns）
+                       - 誤答で休みに入れる（lock = lockTurns）
                        - 押したプレイヤーは非アクティブ化
                        - 他の休み減少処理は同様
                     */
@@ -379,13 +381,13 @@
                     missBtn.disabled = !p.active;
                     missBtn.onclick = () => {
                         saveState(); // 操作前の状態を保存
-                        p.rest = restTurns; // 休み回数をセット
+                        p.lock = lockTurns; // 休み回数をセット
                         p.active = false;   // 休み中は操作不可
                         // 他の休みがある人を1減らし、0になったら復帰
                         players.forEach(other => {
-                            if (other.id !== p.id && other.rest > 0) {
-                                other.rest--;
-                                if (other.rest === 0 && !other.winner) other.active = true;
+                            if (other.id !== p.id && other.lock > 0) {
+                                other.lock--;
+                                if (other.lock === 0 && !other.winner) other.active = true;
                             }
                         });
                         render();
@@ -402,7 +404,7 @@
                     resetBtn.className = "reset";
                     resetBtn.onclick = () => {
                         saveState();
-                        Object.assign(p, { score: 0, rest: 0, active: true, winner: false });
+                        Object.assign(p, { score: 0, lock: 0, active: true, winner: false });
                         render();
                     };
                     btns.append(resetBtn);
@@ -416,15 +418,15 @@
 
         /* -------------------------
            スルー（ターン経過）ボタン処理
-           - 休み中の人の rest を 1 減らし、0 になれば active=true に
+           - 休み中の人の lock を 1 減らし、0 になれば active=true に
            - 操作前に saveState() を呼ぶ（undo 対応）
            ------------------------- */
         document.getElementById("nextBtn").onclick = () => {
             saveState();
             players.forEach(p => {
-                if (p.rest > 0) {
-                    p.rest--;
-                    if (p.rest === 0 && !p.winner) p.active = true;
+                if (p.lock > 0) {
+                    p.lock--;
+                    if (p.lock === 0 && !p.winner) p.active = true;
                 }
             });
             render();
@@ -442,7 +444,7 @@
                 players = players.map(p => ({
                     id: p.id,
                     score: 0,
-                    rest: 0,
+                    lock: 0,
                     active: true,
                     winner: false
                 }));
