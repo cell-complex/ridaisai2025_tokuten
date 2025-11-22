@@ -3,43 +3,27 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>N○M休（コメント付き）</title>
+    <title>N○M休</title>
     <style>
-        /* =========================
-       全体レイアウト
-       ========================= */
         html,
         body {
             height: 100vh;
-            /* ビューポート全体を使う */
             margin: 0;
             font-family: "Yu Gothic", sans-serif;
             background: #f6f6f6;
             text-align: center;
             overflow: hidden;
-            /* スクロール不要なら隠す */
         }
 
-        /* =========================
-       コントロール群（上部）
-       - display:flex で横並びに
-       - flex-wrap:wrap で小さい幅なら折り返す
-       ========================= */
         #controls {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: center;
             gap: 1vw;
-            /* 要素間の隙間 */
             padding: 0.8vw 0;
         }
 
-        /* =========================
-       ボード（プレイヤー領域）
-       - grid で 6列×2行 に配置
-       - justify-items / align-items で各セルの中央揃え
-       ========================= */
         #board {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -49,41 +33,30 @@
             align-items: center;
             width: 95%;
             height: 75vh;
-            /* ボード高さを固定して見た目を安定させる */
             margin: 0 auto;
         }
 
-        /* =========================
-       各プレイヤーカードの見た目
-       - 内部は flex（縦方向）で要素を上下に配置
-       ========================= */
         .player {
             width: 13vw;
-            /* 横幅を vw で指定（レスポンシブ寄り） */
             height: 35vh;
-            /* 高さを vh で指定 */
             background: white;
             border-radius: 0.8vw;
             box-shadow: 0 0 0.4vw rgba(0, 0, 0, 0.3);
             padding: 1vw;
             display: flex;
             flex-direction: column;
-            /* 縦方向に並べる */
             align-items: center;
             justify-content: space-between;
-            /* 上中下の要素を均等に配置 */
             transition: 0.3s;
             font-weight: bold;
             font-size: 4vh;
         }
 
-        /* 非アクティブ（休み中） */
         .inactive {
             background: #ddd;
             color: #888;
         }
 
-        /* 抜け（winner） */
         .winner {
             background: red;
             color: #000;
@@ -95,37 +68,43 @@
             color: white;
         }
 
-        /* 得点表示 */
         .score {
             font-size: 4vw;
             font-weight: bold;
         }
 
-        /* 休み表示（小さめ） */
         .status {
             font-size: 2vw;
             font-weight: bold;
+            height: 2.5vw;
         }
 
-        .rest {
-            font-size: 2.5vw;
+        .lock {
+            font-size: 3vw;
             color: black;
-            margin-top: 4px;
             position: relative;
-            top: -6px;
+            top: -2vw;
+            display: inline-block;
         }
 
-        /* ○×ボタン群：横並びにするために flex を使用 */
+button {
+    outline: none;
+    border: none;
+}
+button:focus {
+    outline: none;
+}
+        
         .btns {
             display: flex;
             gap: 0.6vw;
             justify-content: center;
             width: 90%;
+            flex-wrap: wrap;
         }
 
-        /* ○・×ボタンの共通スタイル
-       - aspect-ratio:1 で正方形にする（ブラウザサポート注意） */
-        .btns button {
+        /* ======== 統一アクションボタン ======== */
+        .actionBtn {
             flex: 1;
             aspect-ratio: 1;
             border: none;
@@ -134,15 +113,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5vw;
+            font-size: 2.5vw;
+            font-weight: bold;
             transition: 0.2s;
+            color: white;
         }
 
-        /* リセットボタン（プレイヤー個別） */
-        .btns .reset {
+        .action-plus {
+            background: red;
+        }
+
+        .action-miss {
+            background: blue;
+        }
+
+        .action-reset {
+            background: gray;
+        }
+
+        .reset {
             flex: none;
             aspect-ratio: 2;
-            /* 横長にする */
             width: 85%;
             font-size: 1.5vw;
             background: gray;
@@ -150,72 +141,35 @@
             border-radius: 0.6vw;
         }
 
-        .btns button:hover {
-            opacity: 0.8;
-        }
-
-        .plus {
-            background: red;
-            color: white;
-        }
-
-        .miss {
-            background: blue;
-            color: white;
-        }
-
-        /* =========================
-       上部コントロールのボタン共通デザイン
-       - controlBtn でサイズを統一
-       - GreenBtn / PinkBtn は色だけ変える
-       ========================= */
         .controlBtn {
-            flex: none;
-            /* 横伸びしない */
-            min-width: 10vw;
-            /* 最低幅を確保 */
+            min-width: 8vw;
             height: 4vw;
-            /* 高さを統一 */
             border: none;
             border-radius: 0.8vw;
             font-weight: bold;
-            font-size: 100%;
             cursor: pointer;
             transition: 0.3s;
-            padding: 0;
-            /* 中の余白は min-width/height で調整済み */
-            display: inline-flex;
-            /* 中央揃え用にflexにしておく */
-            align-items: center;
-            justify-content: center;
         }
 
         .GreenBtn {
             background: #4CAF50;
             color: white;
-        }
-
-        .GreenBtn:hover {
-            background: #45a049;
+            font-size: 90%;
         }
 
         .PinkBtn {
             background: rgb(255, 0, 183);
             color: white;
+            font-size: 70%;
         }
 
-        .PinkBtn:hover {
-            background: rgb(200, 0, 144);
-        }
-
-        /* 数字入力欄 */
         #controls input[type="number"] {
-            width: 3.5vw;
+            width: 3vw;
             padding: 1vw 1vw;
             border: 0.1vw solid #ccc;
             border-radius: 0.5vw;
             text-align: center;
-            font-size: 2.5vw;
+            font-size: 2vw;
             font-weight: bold;
             margin: 1.5vw 0;
             background: white;
@@ -223,263 +177,227 @@
 
         #controls label {
             font-weight: bold;
-            font-size: 2.5vw;
+            font-size: 2vw;
+        }
+
+        #KaiYashumi {
+            margin-right: 3vw;
+        }
+
+        #questionCount {
+            font-weight: bold;
+            font-size: 3vw;
+            margin-right: 3vw;
         }
     </style>
 </head>
 
 <body>
-    <!-- =========================
-       コントロール領域
-       - 入力欄（正解必要回数、休み回数）
-       - スルー・戻る・全枠リセット のボタン
-       ========================= -->
+
     <div id="controls">
         <input type="number" id="winCount" value="3" min="1" />
         <label>回正解で抜け！ 誤答で</label>
-        <input type="number" id="restCount" value="1" min="1" />
-        <label>回休み</label>
+        <input type="number" id="lockCount" value="1" min="1" />
+        <label id="KaiYashumi">回休み</label>
+
+        <span id="questionCount"></span>
+
         <button id="nextBtn" class="controlBtn GreenBtn">スルー</button>
         <button id="backBtn" class="controlBtn GreenBtn">1つ戻る</button>
         <button id="AllResetBtn" class="controlBtn PinkBtn">全枠リセット</button>
+        <button id="resetQuestionCount" class="controlBtn PinkBtn">問題数リセット</button>
     </div>
 
-    <!-- =========================
-       プレイヤーボード（ここに JS で .player を追加する）
-       ========================= -->
     <div id="board"></div>
 
     <script>
-        /* -------------------------
-           定数・初期設定
-           ------------------------- */
         const board = document.getElementById("board");
-        const N = 12; // プレイヤー数（必要に応じて変更可能）
-        // 初期設定値（input の初期値を読むが、render 時に最新値を読み直す）
+        const N = 12;
         let winNeeded = parseInt(document.getElementById("winCount").value);
-        let restTurns = parseInt(document.getElementById("restCount").value);
+        let lockTurns = parseInt(document.getElementById("lockCount").value);
 
-        /* -------------------------
-           プレイヤー状態の保持
-           players はオブジェクト配列：
-           { id, score, rest, active, winner }
-           - score: 現在の正解回数
-           - rest: 休み残りターン数（0なら休み無し）
-           - active: 現在操作可能か（休み中や抜けていると false）
-           - winner: 抜け（勝ち）したかどうか
-           ------------------------- */
         let players = Array.from({ length: N }, (_, i) => ({
             id: i + 1,
             score: 0,
-            rest: 0,
+            lock: 0,
             active: true,
             winner: false
         }));
 
-        /* -------------------------
-           操作履歴（undo 用）
-           history は players のスナップショット配列を保持。
-           - saveState() を操作前に呼んでおくことで undo が可能。
-           - JSON の深いコピーを使って参照共有を防ぐ。
-           - 必要なら履歴数の上限を調整。
-           ------------------------- */
         let history = [];
+        let questionCount = 1;
 
         function saveState() {
-            // players の状態を深コピーして履歴に積む
-            history.push(JSON.parse(JSON.stringify(players)));
-            // 履歴が増えすぎないように上限（ここでは 50）を設定
+            history.push({
+                players: JSON.parse(JSON.stringify(players)),
+                questionCount: questionCount
+            });
             if (history.length > 50) history.shift();
-            localStorage.setItem("players", JSON.stringify(players)); // ← これを追加！
+            localStorage.setItem("players", JSON.stringify(players));
+            localStorage.setItem("questionCount", questionCount);
         }
 
-        /* -------------------------
-           描画関数：players 配列を元に DOM を再生成
-           - 毎回 board.innerHTML = "" して描き直す簡潔な方法
-           ------------------------- */
+        function updateQuestionCount() {
+            document.getElementById("questionCount").textContent = "Q" + questionCount;
+        }
+
+        function incrementQuestionCount() {
+            questionCount++;
+            updateQuestionCount();
+        }
+
         function render() {
-            // board を空にしてから再描画
             board.innerHTML = "";
-
-            // ユーザーが #winCount / #restCount を変えていたら最新値を取得
             winNeeded = parseInt(document.getElementById("winCount").value);
-            restTurns = parseInt(document.getElementById("restCount").value);
+            lockTurns = parseInt(document.getElementById("lockCount").value);
 
-            // 各プレイヤー要素を作成して board に append
             players.forEach(p => {
                 const div = document.createElement("div");
                 div.className = "player";
-                // 非アクティブかつ未勝利なら灰色に
                 if (!p.active && !p.winner) div.classList.add("inactive");
-                // 勝利済みなら winner スタイル
                 if (p.winner) div.classList.add("winner");
 
-                // ヘッダー（番号）
                 const header = document.createElement("div");
                 header.textContent = `No.${p.id}`;
 
-                // 得点部分
                 const score = document.createElement("div");
                 score.className = "score";
-                if (p.winner) {
-                    // winner の場合は「抜け！」表示
-                    score.innerHTML = `<span class="winner-text">抜け！</span>`;
-                } else {
-                    score.textContent = p.score;
-                }
+                score.textContent = p.winner ? "" : p.score;
+                if (p.winner) score.innerHTML = `<span class="winner-text">抜け！</span>`;
 
-                // ステータス（休み残り）
                 const status = document.createElement("div");
                 status.className = "status";
-                if (p.rest > 0 && !p.winner) {
-                    status.innerHTML = `<span class="rest">${p.rest}休</span>`;
-                } else {
-                    status.innerHTML = "";
-                }
+                if (p.lock > 0 && !p.winner) status.innerHTML = `<span class="lock">Lock${p.lock}</span>`;
+                else status.innerHTML = "";
 
-                // ボタン群（○、×）または抜けたらリセットボタン
                 const btns = document.createElement("div");
                 btns.className = "btns";
 
                 if (!p.winner) {
-                    /* ===== ○ボタン =====
-                       - クリック時の処理は「操作前に履歴保存 -> スコア増加 -> 勝利判定 -> 他の休みを1減らす -> 描画」
-                       - plusBtn.disabled で休み中のプレイヤーをクリック不可にする
-                    */
+
+                    /* ○ボタン */
                     const plusBtn = document.createElement("button");
                     plusBtn.textContent = "○";
-                    plusBtn.className = "plus";
+                    plusBtn.className = "actionBtn action-plus";
                     plusBtn.disabled = !p.active;
                     plusBtn.onclick = () => {
-                        saveState(); // 操作前の状態を保存（undo 用）
+                        saveState();
                         p.score++;
-                        // 勝利条件を満たしたら勝ち扱いにして非アクティブ化
-                        if (p.score >= winNeeded) {
-                            p.winner = true;
-                            p.active = false;
-                        }
-                        // 他のプレイヤーで休みがある者は1ターン減らす
+                        incrementQuestionCount();
+                        if (p.score >= winNeeded) { p.winner = true; p.active = false; }
                         players.forEach(other => {
-                            if (other.id !== p.id && other.rest > 0) {
-                                other.rest--;
-                                if (other.rest === 0 && !other.winner) other.active = true;
-                            }
-                        });
-                        render(); // 状態更新後に再描画
-                    };
-
-                    /* ===== ×ボタン =====
-                       - 誤答で休みに入れる（rest = restTurns）
-                       - 押したプレイヤーは非アクティブ化
-                       - 他の休み減少処理は同様
-                    */
-                    const missBtn = document.createElement("button");
-                    missBtn.textContent = "×";
-                    missBtn.className = "miss";
-                    missBtn.disabled = !p.active;
-                    missBtn.onclick = () => {
-                        saveState(); // 操作前の状態を保存
-                        p.rest = restTurns; // 休み回数をセット
-                        p.active = false;   // 休み中は操作不可
-                        // 他の休みがある人を1減らし、0になったら復帰
-                        players.forEach(other => {
-                            if (other.id !== p.id && other.rest > 0) {
-                                other.rest--;
-                                if (other.rest === 0 && !other.winner) other.active = true;
+                            if (other.id !== p.id && other.lock > 0) {
+                                other.lock--;
+                                if (other.lock === 0 && !other.winner) other.active = true;
                             }
                         });
                         render();
                     };
 
-                    btns.append(plusBtn, missBtn);
+                    /* ×ボタン */
+                    const missBtn = document.createElement("button");
+                    missBtn.textContent = "×";
+                    missBtn.className = "actionBtn action-miss";
+                    missBtn.disabled = !p.active;
+                    missBtn.onclick = () => {
+                        saveState();
+                        p.lock = lockTurns;
+                        p.active = false;
+                        incrementQuestionCount();
+                        players.forEach(other => {
+                            if (other.id !== p.id && other.lock > 0) {
+                                other.lock--;
+                                if (other.lock === 0 && !other.winner) other.active = true;
+                            }
+                        });
+                        render();
+                    };
+
+                    /* リセ（得点リセット）ボタン */
+                    const scoreReset = document.createElement("button");
+                    scoreReset.textContent = "0";
+                    scoreReset.className = "actionBtn action-reset";
+                    scoreReset.onclick = () => {
+                        saveState();      // 変更前の状態を履歴に残す
+                        p.score = 0;      // 得点を 0 にする
+
+                        // ★ ロックも解除する（ここが重要）
+                        p.lock = 0;       // 数値ロックを 0 に
+                        p.active = true;  // アクティブに戻す
+
+                        render();         // UI 更新
+                    };
+
+
+                    btns.append(plusBtn, missBtn, scoreReset);
+
                 } else {
-                    /* ===== 抜けたプレイヤー用の「リセット」ボタン =====
-                       - 抜けた個人だけリセットして再参加させる
-                       - この操作も undo 対応のため saveState() を呼ぶ
-                    */
                     const resetBtn = document.createElement("button");
                     resetBtn.textContent = "リセット";
                     resetBtn.className = "reset";
                     resetBtn.onclick = () => {
                         saveState();
-                        Object.assign(p, { score: 0, rest: 0, active: true, winner: false });
+                        Object.assign(p, { score: 0, lock: 0, active: true, winner: false });
                         render();
                     };
                     btns.append(resetBtn);
                 }
 
-                // カードに要素を詰めて board に追加
                 div.append(header, score, status, btns);
                 board.appendChild(div);
             });
+
+            updateQuestionCount();
         }
 
-        /* -------------------------
-           スルー（ターン経過）ボタン処理
-           - 休み中の人の rest を 1 減らし、0 になれば active=true に
-           - 操作前に saveState() を呼ぶ（undo 対応）
-           ------------------------- */
         document.getElementById("nextBtn").onclick = () => {
             saveState();
             players.forEach(p => {
-                if (p.rest > 0) {
-                    p.rest--;
-                    if (p.rest === 0 && !p.winner) p.active = true;
+                if (p.lock > 0) {
+                    p.lock--;
+                    if (p.lock === 0 && !p.winner) p.active = true;
                 }
             });
+            incrementQuestionCount();
             render();
         };
 
-        /* -------------------------
-           全枠リセット
-           - 確認ダイアログ（confirm）で誤操作を防ぐ
-           - 全員を初期状態に戻す（id は保持）
-           - この操作も履歴保存済みなので undo 可能
-           ------------------------- */
         document.getElementById("AllResetBtn").onclick = () => {
             if (confirm("全枠をリセットしますか？")) {
                 saveState();
-                players = players.map(p => ({
-                    id: p.id,
-                    score: 0,
-                    rest: 0,
-                    active: true,
-                    winner: false
-                }));
+                players = players.map(p => ({ id: p.id, score: 0, lock: 0, active: true, winner: false }));
                 localStorage.removeItem("players");
                 render();
             }
         };
 
-        /* -------------------------
-           1つ戻る（undo）
-           - history にスナップショットがあれば最後の状態に戻す
-           - history.pop() で履歴を取り出す（取り出した履歴は消える）
-           - 履歴が空の場合は何もしない（必要なら alert を出す）
-           ------------------------- */
         document.getElementById("backBtn").onclick = () => {
             if (history.length > 0) {
-                players = history.pop(); // 直前の状態に復元
+                const last = history.pop();
+                players = last.players;
+                questionCount = last.questionCount;
                 render();
-            } else {
             }
         };
 
-        /* -------------------------
-           初回レンダリング
-           ------------------------- */
-        render();
-
-        // --- ① ページロード時に localStorage から復元 ---
-        window.addEventListener("load", () => {
-            const saved = localStorage.getItem("players");
-            if (saved) {
-                players = JSON.parse(saved);
+        document.getElementById("resetQuestionCount").onclick = () => {
+            if (confirm("問題数をリセットしますか？")) {
+                questionCount = 1;
+                updateQuestionCount();
             }
-            render(); // ← 復元した内容で描画
+        };
+
+        window.addEventListener("load", () => {
+            const savedPlayers = localStorage.getItem("players");
+            const savedQ = localStorage.getItem("questionCount");
+            if (savedPlayers) players = JSON.parse(savedPlayers);
+            if (savedQ) questionCount = parseInt(savedQ);
+            render();
         });
 
+        render();
     </script>
+
 </body>
 
 </html>
